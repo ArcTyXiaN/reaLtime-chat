@@ -1,4 +1,4 @@
-import { createApp } from './App.js';
+import { createApp } from './app.js';
 import { initializeSocket } from './sockets/index.js';
 import { config } from './config/env.js';
 
