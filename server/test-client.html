@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Test Client</title>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 50px auto; 
+            padding: 20px;
+            background: #0F172A;
+            color: #E5E7EB;
+        }
+        .container { 
+            background: #1E293B; 
+            padding: 20px; 
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        input, button, textarea { 
+            padding: 10px; 
+            margin: 5px; 
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #334155;
+        }
+        input, textarea {
+            background: #0F172A;
+            color: #E5E7EB;
+            width: calc(100% - 30px);
+        }
+        button { 
+            background: #4F46E5; 
+            color: white; 
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+        button:hover { background: #4338CA; }
+        #log { 
+            background: #0F172A; 
+            padding: 15px; 
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .success { color: #22C55E; }
+        .error { color: #EF4444; }
+        .info { color: #22D3EE; }
+        h2 { color: #22D3EE; margin-top: 0; }
+        .status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .connected { background: #22C55E; color: white; }
+        .disconnected { background: #EF4444; color: white; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Socket.io Test Client</h1>
+    
+    <div class="container">
+        <h2>Connection</h2>
+        <div id="status" class="status disconnected">Disconnected</div>
+        <br>
+        <button onclick="connect()">Connect</button>
+        <button onclick="disconnect()">Disconnect</button>
+    </div>
+
+    <div class="container">
+        <h2>1. Login</h2>
+        <input type="text" id="username" placeholder="Enter username" value="TestUser">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div class="container">
+        <h2>2. Send Room Message</h2>
+        <input type="text" id="roomName" placeholder="Room name" value="general">
+        <textarea id="roomMessage" placeholder="Message content" rows="2">Hello from test client!</textarea>
+        <button onclick="sendRoomMessage()">Send to Room</button>
+    </div>
+
+    <div class="container">
+        <h2>3. Create Room</h2>
+        <input type="text" id="newRoomSlug" placeholder="Room slug (e.g., tech-talk)" value="tech-talk">
+        <input type="text" id="newRoomName" placeholder="Display name" value="Tech Talk">
+        <button onclick="createRoom()">Create Room</button>
+    </div>
+
+    <div class="container">
+        <h2>4. Join Room</h2>
+        <input type="text" id="joinRoomName" placeholder="Room to join" value="general">
+        <button onclick="joinRoom()">Join Room</button>
+    </div>
+
+    <div class="container">
+        <h2>5. Send Private Message</h2>
+        <input type="text" id="recipient" placeholder="Recipient username">
+        <textarea id="privateMessage" placeholder="Private message" rows="2">Private hello!</textarea>
+        <button onclick="sendPrivateMessage()">Send Private</button>
+    </div>
+
+    <div class="container">
+        <h2>6. Get Online Users</h2>
+        <button onclick="getOnlineUsers()">Get Users</button>
+    </div>
+
+    <div class="container">
+        <h2>7. Get Rooms List</h2>
+        <button onclick="getRoomsList()">Get Rooms</button>
+    </div>
+
+    <div class="container">
+        <h2>Event Log</h2>
+        <button onclick="clearLog()">Clear Log</button>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        let socket = null;
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            const className = type;
+            logDiv.innerHTML += `<div class="${className}">[${time}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        function updateStatus(connected) {
+            const statusDiv = document.getElementById('status');
+            if (connected) {
+                statusDiv.className = 'status connected';
+                statusDiv.textContent = 'Connected';
+            } else {
+                statusDiv.className = 'status disconnected';
+                statusDiv.textContent = 'Disconnected';
+            }
+        }
+
+        function connect() {
+            if (socket && socket.connected) {
+                log('Already connected', 'info');
+                return;
+            }
+
+            socket = io('http://localhost:3001');
+
+            socket.on('connect', () => {
+                log('✅ Connected to server! Socket ID: ' + socket.id, 'success');
+                updateStatus(true);
+            });
+
+            socket.on('disconnect', () => {
+                log('❌ Disconnected from server', 'error');
+                updateStatus(false);
+            });
+
+            socket.on('connect_error', (error) => {
+                log('Connection error: ' + error.message, 'error');
+            });
+
+            // Listen to all events
+            socket.on('message:received', (data) => {
+                log('📨 Room message: ' + JSON.stringify(data), 'info');
+            });
+
+            socket.on('message:private:received', (data) => {
+                log('💬 Private message: ' + JSON.stringify(data), 'info');
+            });
+
+            socket.on('user:online', (data) => {
+                log('🟢 User online: ' + data.username, 'success');
+            });
+
+            socket.on('user:offline', (data) => {
+                log('🔴 User offline: ' + data.username, 'error');
+            });
+
+            socket.on('user:joined', (data) => {
+                log('👋 User joined: ' + data.username + ' → ' + data.roomName, 'info');
+            });
+
+            socket.on('user:left', (data) => {
+                log('👋 User left: ' + data.username + ' ← ' + data.roomName, 'info');
+            });
+
+            socket.on('room:created', (data) => {
+                log('🏠 Room created: ' + JSON.stringify(data), 'success');
+            });
+
+            socket.on('user:typing', (data) => {
+                log('⌨️ ' + data.username + ' is typing in ' + data.roomName, 'info');
+            });
+
+            socket.on('user:stopped-typing', (data) => {
+                log('⌨️ ' + data.username + ' stopped typing', 'info');
+            });
+        }
+
+        function disconnect() {
+            if (socket) {
+                socket.disconnect();
+                socket = null;
+                log('Disconnected manually', 'info');
+            }
+        }
+
+        function login() {
+            if (!socket || !socket.connected) {
+                log('Not connected! Click Connect first', 'error');
+                return;
+            }
+
+            const username = document.getElementById('username').value;
+            
+            socket.emit('user:login', { username }, (response) => {
+                if (response.success) {
+                    log('✅ Login successful! User: ' + response.user.username, 'success');
+                    log('Online users: ' + response.onlineUsers.join(', '), 'info');
+                } else {
+                    log('❌ Login failed: ' + response.error, 'error');
+                }
+            });
+        }
+
+        function sendRoomMessage() {
+            if (!socket || !socket.connected) {
+                log('Not connected!', 'error');
+                return;
+            }
+
+            const roomName = document.getElementById('roomName').value;
+            const content = document.getElementById('roomMessage').value;
+
+            socket.emit('message:room', { roomName, content }, (response) => {
+                if (response.success) {
+                    log('✅ Message sent! ID: ' + response.messageId, 'success');
+                } else {
+                    log('❌ Send failed: ' + response.error, 'error');
+                }
+            });
+        }
+
+        function createRoom() {
+            if (!socket || !socket.connected) {
+                log('Not connected!', 'error');
+                return;
+            }
+
+            const roomName = document.getElementById('newRoomSlug').value;
+            const displayName = document.getElementById('newRoomName').value;
+
+            socket.emit('room:create', { roomName, displayName }, (response) => {
+                if (response.success) {
+                    log('✅ Room created: ' + JSON.stringify(response.room), 'success');
+                } else {
+                    log('❌ Create failed: ' + response.error, 'error');
+                }
+            });
+        }
+
+        function joinRoom() {
+            if (!socket || !socket.connected) {
+                log('Not connected!', 'error');
+                return;
+            }
+
+            const roomName = document.getElementById('joinRoomName').value;
+
+            socket.emit('room:join', { roomName }, (response) => {
+                if (response.success) {
+                    log('✅ Joined room: ' + response.roomName, 'success');
+                    log('Room users: ' + response.users.join(', '), 'info');
+                    log('Message history: ' + response.messages.length + ' messages', 'info');
+                } else {
+                    log('❌ Join failed: ' + response.error, 'error');
+                }
+            });
+        }
+
+        function sendPrivateMessage() {
+            if (!socket || !socket.connected) {
+                log('Not connected!', 'error');
+                return;
+            }
+
+            const recipientUsername = document.getElementById('recipient').value;
+            const content = document.getElementById('privateMessage').value;
+
+            socket.emit('message:private', { recipientUsername, content }, (response) => {
+                if (response.success) {
+                    log('✅ Private message sent! Delivered: ' + response.delivered, 'success');
+                } else {
+                    log('❌ Send failed: ' + response.error, 'error');
+                }
+            });
+        }
+
+        function getOnlineUsers() {
+            if (!socket || !socket.connected) {
+                log('Not connected!', 'error');
+                return;
+            }
+
+            socket.emit('users:online', (response) => {
+                if (response.success) {
+                    log('👥 Online users: ' + JSON.stringify(response.users, null, 2), 'success');
+                }
+            });
+        }
+
+        function getRoomsList() {
+            if (!socket || !socket.connected) {
+                log('Not connected!', 'error');
+                return;
+            }
+
+            socket.emit('rooms:list', (response) => {
+                if (response.success) {
+                    log('🏠 Rooms: ' + JSON.stringify(response.rooms, null, 2), 'success');
+                }
+            });
+        }
+
+        // Auto-connect on load
+        log('Ready! Click Connect to start', 'info');
+    </script>
+</body>
+</html>
