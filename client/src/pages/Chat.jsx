@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChatStore } from '../store/chatStore';
 import socket from '../socket/socket';
-import ChatWindow from '../components/Chat/ChatWindow';
-import RoomList from '../components/Sidebar/RoomList';
-import UserList from '../components/Sidebar/UserList';
+import ChatWindow from '../components/chat/ChatWindow';
+import RoomList from '../components/sidebar/RoomList';
+import UserList from '../components/sidebar/UserList';
 
 const Chat = () => {
   const navigate = useNavigate();
