@@ -8,11 +8,11 @@ const TypingIndicator = ({ usernames }) => {
     : `${usernames.length} people are typing`;
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 text-sm text-text-muted animate-fade-in">
+    <div className="flex items-center gap-2 px-4 py-2 text-sm text-text-muted">
       <div className="flex gap-1">
-        <span className="typing-dot w-2 h-2 bg-accent-cyan rounded-full"></span>
-        <span className="typing-dot w-2 h-2 bg-accent-cyan rounded-full"></span>
-        <span className="typing-dot w-2 h-2 bg-accent-cyan rounded-full"></span>
+        <span className="typing-dot w-2 h-2 bg-accent rounded-full"></span>
+        <span className="typing-dot w-2 h-2 bg-accent rounded-full"></span>
+        <span className="typing-dot w-2 h-2 bg-accent rounded-full"></span>
       </div>
       <span>{displayText}...</span>
     </div>

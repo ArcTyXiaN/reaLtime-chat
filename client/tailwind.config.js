@@ -7,36 +7,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Custom dark theme colors
-        'bg-main': '#0F172A',
-        'bg-secondary': '#1E293B',
-        'chat-sender': '#4F46E5',
-        'chat-receiver': '#334155',
-        'accent-cyan': '#22D3EE',
-        'success-green': '#22C55E',
-        'warning-amber': '#F59E0B',
-        'error-red': '#EF4444',
-        'text-primary': '#E5E7EB',
-        'text-muted': '#94A3B8',
+        // Simple Light Mode Colors
+        'bg-main': '#FFFFFF',
+        'bg-secondary': '#F5F5F5',
+        'bg-tertiary': '#E8E8E8',
+        'chat-sender': '#007AFF',      // Blue
+        'chat-receiver': '#E5E5EA',     // Light Gray
+        'accent': '#007AFF',            // Blue
+        'success': '#34C759',           // Green
+        'warning': '#FF9500',           // Orange
+        'error': '#FF3B30',             // Red
+        'text-primary': '#000000',
+        'text-secondary': '#666666',
+        'text-muted': '#999999',
+        'border': '#D1D1D6',
       },
       fontFamily: {
-        'display': ['Space Grotesk', 'system-ui', 'sans-serif'],
-        'body': ['Inter', 'system-ui', 'sans-serif'],
-      },
-      animation: {
-        'slide-in': 'slideIn 0.3s ease-out',
-        'fade-in': 'fadeIn 0.2s ease-in',
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-      keyframes: {
-        slideIn: {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
+        'sans': ['Inter', 'system-ui', 'sans-serif'],
       },
     },
   },

@@ -49,13 +49,13 @@ const RoomList = () => {
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-display font-semibold text-text-muted uppercase tracking-wider">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">
           Rooms
         </h3>
         <button
           onClick={() => setShowCreateRoom(!showCreateRoom)}
-          className="w-6 h-6 rounded-md bg-accent-cyan/20 hover:bg-accent-cyan/30 text-accent-cyan flex items-center justify-center transition-all duration-200 hover:scale-110"
+          className="w-6 h-6 rounded-md bg-accent/10 hover:bg-accent/20 text-accent flex items-center justify-center transition-all duration-200"
           title="Create room"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,14 +66,14 @@ const RoomList = () => {
 
       {/* Create Room Form */}
       {showCreateRoom && (
-        <div className="glass rounded-lg p-3 mb-3 animate-fade-in">
+        <div className="card p-3 mb-3">
           <form onSubmit={handleCreateRoom} className="space-y-2">
             <input
               type="text"
               value={newRoomDisplay}
               onChange={(e) => setNewRoomDisplay(e.target.value)}
-              placeholder="Room display name"
-              className="w-full input-primary text-sm py-1.5"
+              placeholder="Room name"
+              className="w-full input-primary text-sm py-2"
               autoFocus
             />
             <input
@@ -81,19 +81,19 @@ const RoomList = () => {
               value={newRoomName}
               onChange={(e) => setNewRoomName(e.target.value)}
               placeholder="room-slug"
-              className="w-full input-primary text-sm py-1.5"
+              className="w-full input-primary text-sm py-2"
             />
             <div className="flex gap-2">
               <button
                 type="submit"
-                className="flex-1 bg-accent-cyan hover:bg-accent-cyan/90 text-bg-main font-medium px-3 py-1.5 rounded-md text-sm transition-all duration-200"
+                className="flex-1 bg-accent hover:bg-accent/90 text-white font-medium px-3 py-2 rounded-lg text-sm"
               >
                 Create
               </button>
               <button
                 type="button"
                 onClick={() => setShowCreateRoom(false)}
-                className="px-3 py-1.5 rounded-md text-sm text-text-muted hover:bg-bg-secondary transition-all duration-200"
+                className="px-3 py-2 rounded-lg text-sm text-text-secondary hover:bg-bg-secondary"
               >
                 Cancel
               </button>
@@ -110,20 +110,20 @@ const RoomList = () => {
             onClick={() => handleJoinRoom(room.name)}
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 ${
               currentRoom === room.name
-                ? 'bg-chat-sender text-white shadow-lg glow-indigo'
+                ? 'bg-accent text-white'
                 : 'hover:bg-bg-secondary text-text-primary'
             }`}
           >
-            <div className="flex items-center gap-3">
-              <div className={`w-2 h-2 rounded-full ${
-                currentRoom === room.name ? 'bg-white' : 'bg-text-muted/50'
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                currentRoom === room.name ? 'bg-white' : 'bg-text-muted'
               }`} />
-              <span className="font-medium text-sm">{room.displayName}</span>
+              <span className="font-medium text-sm truncate">{room.displayName}</span>
             </div>
-            <span className={`text-xs px-2 py-0.5 rounded-full ${
+            <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${
               currentRoom === room.name 
                 ? 'bg-white/20' 
-                : 'bg-text-muted/10 text-text-muted'
+                : 'bg-bg-tertiary text-text-muted'
             }`}>
               {room.userCount}
             </span>

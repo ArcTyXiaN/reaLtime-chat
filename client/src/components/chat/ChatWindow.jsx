@@ -116,7 +116,6 @@ const ChatWindow = () => {
         { recipientUsername: activeConversation, content },
         (response) => {
           if (response.success) {
-            // Update message with real ID and delivery status
             tempMessage.id = response.messageId;
             tempMessage.delivered = response.delivered;
           } else {
@@ -148,13 +147,13 @@ const ChatWindow = () => {
   return (
     <div className="flex flex-col h-full bg-bg-main">
       {/* Header */}
-      <div className="glass border-b border-text-muted/10 px-6 py-4">
+      <div className="bg-white border-b border-border px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-display font-semibold text-text-primary">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg sm:text-xl font-semibold text-text-primary truncate">
               {getChatTitle()}
             </h2>
-            <p className="text-sm text-text-muted mt-0.5">
+            <p className="text-xs sm:text-sm text-text-secondary">
               {getChatSubtitle()}
             </p>
           </div>
@@ -162,10 +161,10 @@ const ChatWindow = () => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-1">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-1">
         {currentMessages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-text-muted text-center">
+            <p className="text-text-muted text-center text-sm">
               No messages yet. Start the conversation!
             </p>
           </div>
@@ -191,8 +190,8 @@ const ChatWindow = () => {
       </div>
 
       {/* Input */}
-      <div className="glass border-t border-text-muted/10 px-6 py-4">
-        <form onSubmit={sendMessage} className="flex gap-3">
+      <div className="bg-white border-t border-border px-4 sm:px-6 py-3 sm:py-4 safe-area-bottom">
+        <form onSubmit={sendMessage} className="flex gap-2 sm:gap-3">
           <input
             type="text"
             value={messageInput}
@@ -201,13 +200,12 @@ const ChatWindow = () => {
               handleTyping();
             }}
             placeholder={`Message ${chatMode === 'room' ? getChatTitle() : activeConversation}...`}
-            className="flex-1 input-primary"
-            autoFocus
+            className="flex-1 input-primary text-sm sm:text-base"
           />
           <button
             type="submit"
             disabled={!messageInput.trim()}
-            className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed px-4 sm:px-6"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
